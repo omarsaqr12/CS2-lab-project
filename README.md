@@ -1,70 +1,66 @@
-﻿# CS2-lab-project
-        {"Nazeer", "892003", 300},
-        {"Omar", "password", 200},
-        {"Salma", "12345", 100},
-     this is the users' data
+# Qt Restaurant Ordering Demo — CS2 Lab Project
 
-# CS2 Lab Project - Restaurant Management System
+A small **C++17 / Qt Widgets coursework GUI** for choosing food, reviewing a cart and making purchases using an in-memory demo balance. The project illustrates Qt Designer forms, signals/slots, C++ classes and state passed between dialogs. It is not a real restaurant back office, secure authentication system or payment processor.
 
-## Overview
+## What is implemented
 
-This project is a simple Restaurant Management System built as a lab project for the CS2 course. It uses C++ and the Qt framework for creating a graphical user interface (GUI). The system allows users to interact with various aspects of restaurant management, such as menu management, user sign-in, and payment processing.
+- Sign in as one of **three hard-coded example users** declared in [`sign_in_window.h`](sign_in_window.h). Credentials are stored as plain text in the source and exist only for classroom demonstration; **do not reuse real passwords**.
+- Choose from three chicken and three meat items, add multiple items to a cart and review each item and the total.
+- Recharge an in-memory balance with a positive integer amount and buy a cart if the account has sufficient balance. Purchases debit the signed-in user once; the cart clears after a successful purchase, and the balance carries across dialogs in the same application session.
 
-## Features
+Menu prices and user accounts are compiled into the application. There is **no menu editing, account creation, password storage security, card charge, database, receipt, multi-user server or persistence after restart**. Any “payment” or “recharge” is simulated, not a financial transaction.
 
-- **Menu Management**: Add, edit, and remove food items from the restaurant's menu.
-- **User Authentication**: A sign-in window allows users to log in securely.
-- **Payment Processing**: A module for handling customer payments.
-- **Graphical User Interface**: A user-friendly interface created using Qt.
+## Run
 
-## File Structure
+Requires Qt 6 with the **Qt Widgets** module, qmake and a compatible C++17 compiler. Open [`QTstore.pro`](QTstore.pro) in Qt Creator, select an installed desktop Qt 6 kit and build/run. The project uses qmake rather than CMake; no data files or network services are required.
 
-- **main.cpp**: The entry point for the application.
-- **food.cpp / food.h**: Handles the data and functionality related to food items.
-- **foodmenu.cpp / foodmenu.h**: Manages the restaurant's menu.
-- **payment.cpp / payment.h**: Processes payments within the system.
-- **user.cpp / user.h**: Manages user data and authentication.
-- **sign_in_window.cpp / sign_in_window.h / sign_in_window.ui**: Implements the sign-in interface.
-- **foodmenu.ui**: The user interface layout for the food menu.
-- **payment.ui**: The user interface layout for the payment system.
-- **QTstore.pro**: The Qt project file containing build configuration.
+On Linux with Qt 6/qmake installed, an out-of-source build is:
 
-## Getting Started
+```bash
+mkdir -p build/app
+cd build/app
+qmake6 ../../QTstore.pro
+make -j2
+./QTstore
+```
 
-### Prerequisites
+On Windows, use Qt Creator's Build/Run actions with your matching compiler kit. The specific executable name and compiler command may differ by platform. The original Qt Creator user settings file (`QTstore.pro.user`) is machine-specific and is not needed for a fresh checkout.
 
-- **Qt Framework**: Make sure you have Qt installed on your system.
-- **C++ Compiler**: A C++ compiler such as g++ is required to compile the source code.
+## Try it
 
-### Installation
+Sign in with one of the **demo accounts shown in the source**, select a chicken item and press **Add to cart**. Select a meat item and add that too; changing category clears the other dropdown selection. Select **View Cart** to see the itemized list and order total. If the simulated balance is insufficient, enter a positive recharge amount and retry. A successful purchase disables the buy button, empties the cart on return and updates the same in-memory user balance.
 
-1. Clone the repository:
+## Repository map and verification
 
-   \`\`\`sh
-   git clone https://github.com/omarsaqr12/CS2-lab-project.git
-   cd CS2-lab-project
-   \`\`\`
+| File | Role |
+| --- | --- |
+| [`main.cpp`](main.cpp), [`sign_in_window.*`](sign_in_window.cpp) | Qt application entry point, demo login and session entry |
+| [`food.*`](food.cpp), [`foodmenu.*`](foodmenu.cpp) | Fixed menu items, category selection and cart state |
+| [`user.*`](user.cpp), [`account_balance.h`](account_balance.h) | Demo user and checked balance arithmetic |
+| [`payment.*`](payment.cpp) | Cart display, simulated recharge and once-only purchase |
+| [`foodmenu.ui`](foodmenu.ui), [`payment.ui`](payment.ui), [`sign_in_window.ui`](sign_in_window.ui) | Qt Designer layouts used by the GUI |
+| [`tests/test_account_balance.cpp`](tests/test_account_balance.cpp) | Standalone boundary checks: insufficient funds, negative/zero values and overflow |
+| [`tests/qt_smoke.cpp`](tests/qt_smoke.cpp), [`tests/qt_smoke.pro`](tests/qt_smoke.pro) | Qt widget-level cart, recharge, purchase and session-state smoke test |
 
-2. Open the project file (`QTstore.pro`) in Qt Creator or another Qt-compatible IDE.
+The standalone balance test needs only g++:
 
-3. Build and run the project.
+```bash
+g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -I. tests/test_account_balance.cpp -o account_test
+./account_test
+```
 
-### Usage
+With Qt 6, build and run the widget test using a separate directory:
 
-After running the application, you'll be presented with the main interface where you can:
+```bash
+mkdir -p build/test
+cd build/test
+qmake6 ../../tests/qt_smoke.pro
+make -j2
+QT_QPA_PLATFORM=offscreen ./qt_smoke
+```
 
-- **Sign in**: Use your credentials to log in.
-- **Manage Menu**: Add or remove food items from the menu.
-- **Process Payments**: Handle customer payments through the payment interface.
+The UI test requires the Qt Test module and the offscreen Qt platform plugin. Passing the arithmetic test alone does **not** prove that GUI behavior works. See the pull request's verification notes for which checks were actually executed.
 
-## Contributing
+## Scope and provenance
 
-If you'd like to contribute to this project, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License - see the `LICENSE` file for details.
-
-## Contact
-
-For any questions or feedback, please contact Omar Saqr at [your email].
+This is an updated demonstration of an existing coursework project, **not** evidence of a deployed or independently evaluated system. The repository does not contain a license file or a reliable breakdown of individual contributions, so no license or exclusive authorship claim is made. The original code is retained in Git history; `main (1).cpp` is an unused duplicate and is not included in the qmake build. The previously tracked Qt Creator configuration is excluded from the proposed branch because it contains local machine paths, not portable build instructions.
