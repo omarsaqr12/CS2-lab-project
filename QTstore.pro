@@ -17,6 +17,7 @@ SOURCES += \
     user.cpp
 
 HEADERS += \
+    account_balance.h \
     food.h \
     foodmenu.h \
     payment.h \

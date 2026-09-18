@@ -1,0 +1,10 @@
+*.pro.user
+build/
+build-*/
+Makefile
+*.o
+moc_*.cpp
+ui_*.h
+qrc_*.cpp
+/.qmake.stash
+/account_test

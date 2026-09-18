@@ -1,22 +1,20 @@
 #ifndef USER_H
 #define USER_H
 
+#include "account_balance.h"
 #include <QString>
 
-class User
-{
+class User {
 public:
     User(QString name, QString password, int balance);
-
     QString getName() const;
     QString getPassword() const;
     int getBalance() const;
-    void setBalance(int balance);
-
+    bool recharge(int amount);
+    bool purchase(int total);
 private:
     QString name_;
     QString password_;
-    int balance_;
+    AccountBalance balance_;
 };
-
-#endif // USER_H
+#endif

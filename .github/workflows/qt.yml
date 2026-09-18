@@ -1,0 +1,30 @@
+name: Qt and C++ checks
+on:
+  push:
+  pull_request:
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Qt 6 development tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qt6-base-dev qt6-base-dev-tools qmake6
+      - name: Arithmetic contract tests
+        run: |
+          g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -I. tests/test_account_balance.cpp -o account_test
+          ./account_test
+      - name: Build application
+        run: |
+          mkdir -p build/app
+          cd build/app
+          qmake6 ../../QTstore.pro
+          make -j2
+      - name: Build and run Qt widget smoke test
+        run: |
+          mkdir -p build/test
+          cd build/test
+          qmake6 ../../tests/qt_smoke.pro
+          make -j2
+          QT_QPA_PLATFORM=offscreen ./qt_smoke
